@@ -87,18 +87,34 @@ class OwnerController {
 			owner.setLastName(""); // empty string signifies broadest possible search
 		}
 
+		if (owner.getFirstName() == null) {
+			owner.setFirstName(""); // empty string signifies broadest possible search
+		}
+
 		// find owners by last name
 		Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
-		if (results.isEmpty()) {
+
+		Collection<Owner> results2 = this.owners.findByFirstName(owner.getFirstName());
+
+
+		if (results.isEmpty() && results2.isEmpty() ) {
 			// no owners found
 			result.rejectValue("lastName", "notFound", "not found");
 			return "owners/findOwners";
 		}
-		else if (results.size() == 1) {
+
+		else if (results.size() == 1 ) {
 			// 1 owner found
 			owner = results.iterator().next();
 			return "redirect:/owners/" + owner.getId();
 		}
+
+		else if (results2.size() == 1 ) {
+			// 1 owner found
+			owner = results2.iterator().next();
+			return "redirect:/owners/" + owner.getId();
+		}
+
 		else {
 			// multiple owners found
 			model.put("selections", results);
